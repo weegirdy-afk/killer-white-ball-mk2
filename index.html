@@ -6,7 +6,6 @@
 <title>Killer Pool</title>
 
 <style>
-  /* ✅ Brighter theme */
   :root{
     --felt1:#1f8a6a;
     --felt2:#0f5f4a;
@@ -21,7 +20,6 @@
     min-height:100vh;
     display:flex;
     justify-content:center;
-
     background: linear-gradient(180deg, #5fd3a4, #2fbf8f);
     color: #ffffff;
     font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -120,7 +118,6 @@
     border-radius: 14px;
     background: rgba(255,255,255,.08);
     border: 1px solid rgba(255,255,255,.14);
-
     display:flex;
     justify-content: space-between;
     align-items:center;
@@ -279,7 +276,7 @@
     box-shadow: 0 10px 30px rgba(0,0,0,.40);
   }
 
-  /* ✅ overlays MUST be display:none ONLY (no second display:grid) */
+  /* overlays are hidden by default */
   #refOverlay{
     display:none;
     position:fixed;
@@ -364,7 +361,7 @@
     100%{ opacity:0; transform: scale(1.10); }
   }
 
-  /* HAHA UNLUCKY (FIXED: no display:grid in CSS) */
+  /* HAHA UNLUCKY */
   #messageOverlay{
     display:none;
     position:fixed;
@@ -394,7 +391,7 @@
     100%{ opacity:0; transform: scale(1.03); }
   }
 
-  /* DECK ALERT (FIXED: no display:grid in CSS) */
+  /* DECK ALERT */
   #deckOverlay{
     display:none;
     position:fixed;
@@ -408,11 +405,13 @@
     font-weight: 1000;
     letter-spacing: 2px;
     text-transform: uppercase;
-    font-size: clamp(34px, 7vw, 80px);
+    font-size: clamp(28px, 6.6vw, 70px);
     color: #fff;
     text-shadow: 0 18px 60px rgba(0,0,0,.75);
     transform: scale(.92);
     opacity: 0;
+    padding: 0 14px;
+    text-align:center;
   }
   .deckOn #deckText{
     animation: deckBoom 1.15s cubic-bezier(.2,.9,.2,1) forwards;
@@ -485,22 +484,10 @@
   </div>
 </div>
 
-<!-- NEXT PLAYER FLASH -->
-<div id="flashOverlay">
-  <div id="flashText">NEXT PLAYER</div>
-</div>
+<div id="flashOverlay"><div id="flashText">NEXT PLAYER</div></div>
+<div id="messageOverlay"><div id="messageText">HAHA UNLUCKY</div></div>
+<div id="deckOverlay"><div id="deckText">RESHUFFLE</div></div>
 
-<!-- HAHA UNLUCKY -->
-<div id="messageOverlay">
-  <div id="messageText">HAHA UNLUCKY</div>
-</div>
-
-<!-- DECK ALERT -->
-<div id="deckOverlay">
-  <div id="deckText">RESHUFFLE</div>
-</div>
-
-<!-- REF OVERLAY -->
 <div id="refOverlay" onclick="toggleRef()">
   <div id="refPanel" onclick="event.stopPropagation()">
     <h2>🧑‍⚖️ Ref Mode</h2>
@@ -513,16 +500,19 @@
 <script>
   const baseDeck = ["A","K","Q","J","10","9","8","7","6","5","4","3","2"];
 
-  // Players: { name, card, lives, extras: [] }
+  // Players: { name, card, baseLives, extras: [] }
   let players = [];
   let activePlayers = [];
   let currentIdx = null;
   let transitioning = false;
 
-  // Spares + piles
-  let drawPile = [];       // undealt spares, then refilled by reshuffling recycle
-  let recyclePile = [];    // Pile 2: cards that were potted (re-used later)
-  let deadCount = 0;       // Pile 3: miss/white (dead forever; count only)
+  // Piles:
+  // Pile 1 = drawPile (the "lives in play" pack)
+  // Pile 2 = wonPile (tokens won from pot/black; reshuffled back into pile 1 when pile 1 empty)
+  // Pile 3 = deadCount (miss/white dead forever)
+  let drawPile = [];    // Pile 1
+  let wonPile = [];     // Pile 2
+  let deadCount = 0;    // Pile 3
 
   function shuffle(arr) {
     const a = [...arr];
@@ -533,18 +523,19 @@
     return a;
   }
 
+  function totalLives(p){
+    return Math.max(0, p.baseLives) + (p.extras?.length || 0);
+  }
+
   function addPlayer() {
     const count = document.querySelectorAll("#playerList input").length;
-    if (count >= 13) {
-      alert("Maximum 13 players (A–2).");
-      return;
-    }
+    if (count >= 13) return alert("Maximum 13 players (A–2).");
     const input = document.createElement("input");
     input.placeholder = "Player name";
     document.getElementById("playerList").appendChild(input);
   }
 
-  function showDeckAlert(text, ms=1000){
+  function showDeckAlert(text, ms=1100){
     const overlay = document.getElementById("deckOverlay");
     const label = document.getElementById("deckText");
     label.textContent = text;
@@ -560,14 +551,28 @@
     }, ms);
   }
 
-  function drawNextSpare(){
+  function showHahaUnlucky(){
+    const overlay = document.getElementById("messageOverlay");
+    overlay.style.display = "grid";
+    overlay.classList.remove("msgOn");
+    void overlay.offsetWidth;
+    overlay.classList.add("msgOn");
+    setTimeout(() => {
+      overlay.classList.remove("msgOn");
+      overlay.style.display = "none";
+    }, 900);
+  }
+
+  // Take 1 token from Pile 1.
+  // If Pile 1 empty -> reshuffle all of Pile 2 into Pile 1.
+  function takeFromPile1(){
     if (drawPile.length === 0) {
-      if (recyclePile.length > 0) {
-        showDeckAlert("RESHUFFLE");
-        drawPile = shuffle(recyclePile);
-        recyclePile = [];
+      if (wonPile.length > 0) {
+        showDeckAlert("PILE 1 EMPTY — RESHUFFLING PILE 2");
+        drawPile = shuffle(wonPile);
+        wonPile = [];
       } else {
-        showDeckAlert("NO SPARES");
+        showDeckAlert("NO CARDS LEFT");
         return null;
       }
     }
@@ -580,7 +585,7 @@
     currentIdx = null;
     transitioning = false;
 
-    recyclePile = [];
+    wonPile = [];
     deadCount = 0;
     drawPile = [];
 
@@ -602,15 +607,13 @@
       return;
     }
 
-    // Deal one card each (Pile 1)
+    // Deal ONE fixed card per player (their card never changes)
     const deck = shuffle(baseDeck);
-    const dealt = [];
     let delay = 0;
 
     names.forEach(name => {
       const card = deck.pop();
-      dealt.push(card);
-      players.push({ name, card, lives: 3, extras: [] });
+      players.push({ name, card, baseLives: 3, extras: [] });
 
       setTimeout(() => {
         const row = document.createElement("div");
@@ -625,7 +628,7 @@
       delay += 220;
     });
 
-    // Remaining undealt cards become spares draw pile
+    // Remaining undealt cards become Pile 1 (lives in play pack)
     drawPile = shuffle(deck);
 
     setTimeout(() => {
@@ -646,8 +649,19 @@
     transitionToNextShooter(true);
   }
 
+  function showNextPlayerFlash(durationMs){
+    const overlay = document.getElementById("flashOverlay");
+    overlay.style.display = "block";
+    overlay.classList.remove("flashOn");
+    void overlay.offsetWidth;
+    overlay.classList.add("flashOn");
+    setTimeout(() => {
+      overlay.classList.remove("flashOn");
+      overlay.style.display = "none";
+    }, durationMs);
+  }
+
   function transitionToNextShooter(isFirst=false) {
-    // Winner
     if (activePlayers.length === 1) {
       const w = players[activePlayers[0]];
       document.getElementById("currentName").textContent = `🏆 ${w.name} WINS`;
@@ -681,76 +695,54 @@
     refreshRefList();
   }
 
-  function showNextPlayerFlash(durationMs){
-    const overlay = document.getElementById("flashOverlay");
-    overlay.style.display = "block";
-    overlay.classList.remove("flashOn");
-    void overlay.offsetWidth;
-    overlay.classList.add("flashOn");
-
-    setTimeout(() => {
-      overlay.classList.remove("flashOn");
-      overlay.style.display = "none";
-    }, durationMs);
+  function maybeEliminateCurrent(){
+    const p = players[currentIdx];
+    if (p.baseLives <= 0 && (p.extras?.length || 0) === 0) {
+      activePlayers = activePlayers.filter(i => i !== currentIdx);
+    }
   }
 
-  function showHahaUnlucky(){
-    const overlay = document.getElementById("messageOverlay");
-    overlay.style.display = "grid";
-    overlay.classList.remove("msgOn");
-    void overlay.offsetWidth;
-    overlay.classList.add("msgOn");
-
-    setTimeout(() => {
-      overlay.classList.remove("msgOn");
-      overlay.style.display = "none";
-    }, 900);
-  }
-
-  // Rules:
-  // - Miss: lose 1 life (dead forever)
-  // - White: lose 1 life (dead forever) + message
-  // - Pot: your card -> recycle pile, you draw a new card from spares
-  // - Black: keep same card, gain +1 life by consuming ONE spare as an extra ball
+  // GAME ACTIONS (your rules):
+  // - Pot: take 1 token from Pile 1 -> move it to Pile 2 -> player gains +1 extra life. Player's card stays the same.
+  // - Black: same as Pot (+1 extra life; token moved Pile 1 -> Pile 2).
+  // - Miss/White: lose a life (remove extra first, otherwise base). The lost life is dead forever (Pile 3).
   function doAction(type) {
     if (currentIdx === null || transitioning) return;
     const p = players[currentIdx];
 
-    if (type === "miss") {
-      p.lives -= 1;
-      deadCount += 1;
-      if (p.lives <= 0) activePlayers = activePlayers.filter(i => i !== currentIdx);
-      transitionToNextShooter(false);
-      return;
-    }
+    if (type === "pot" || type === "black") {
+      const token = takeFromPile1();
+      if (!token) { transitionToNextShooter(false); return; }
 
-    if (type === "white") {
-      showHahaUnlucky();
-      p.lives -= 1;
-      deadCount += 1;
-      if (p.lives <= 0) activePlayers = activePlayers.filter(i => i !== currentIdx);
-      setTimeout(() => transitionToNextShooter(false), 350);
-      return;
-    }
+      wonPile.push(token);   // moved into Pile 2
+      p.extras.push(token);  // player earned/holds it
 
-    if (type === "pot") {
-      if (p.card && p.card !== "—") recyclePile.push(p.card);
-      const next = drawNextSpare();
-      if (next) p.card = next; // if none, keep same card
-      transitionToNextShooter(false);
-      return;
-    }
-
-    if (type === "black") {
-      const spare = drawNextSpare();
-      if (!spare) {
-        transitionToNextShooter(false);
-        return;
-      }
-      p.lives += 1;
-      p.extras.push(spare); // track that a spare was consumed for the life
       showDeckAlert("+1 LIFE", 850);
+      refreshRefList();
       transitionToNextShooter(false);
+      return;
+    }
+
+    if (type === "white") showHahaUnlucky();
+
+    if (type === "miss" || type === "white") {
+      // lose life: extra first, else base
+      if (p.extras.length > 0) {
+        p.extras.pop();
+
+        // also remove one token from Pile 2 (that earned life is now gone)
+        if (wonPile.length > 0) wonPile.pop();
+      } else {
+        p.baseLives -= 1;
+      }
+
+      deadCount += 1;
+      maybeEliminateCurrent();
+      refreshRefList();
+
+      if (type === "white") setTimeout(() => transitionToNextShooter(false), 350);
+      else transitionToNextShooter(false);
+
       return;
     }
   }
@@ -792,23 +784,20 @@
     const refList = document.getElementById("refList");
     const activeSet = new Set(activePlayers);
 
-    const inPlay = activePlayers.length; // one assigned card per active player
     const extrasTotal = players.reduce((sum,p)=>sum + (p.extras?.length||0), 0);
 
     refList.innerHTML = `
       <div style="margin-bottom:10px;">
         <strong>Piles:</strong>
-        <span class="pill">P1 in-play: ${inPlay}</span>
-        <span class="pill">P2 recycle: ${recyclePile.length}</span>
-        <span class="pill">P3 dead: ${deadCount}</span>
-        <span class="pill">Spares: ${drawPile.length}</span>
-        <span class="pill">Extra balls used: ${extrasTotal}</span>
+        <span class="pill">Pile 1 (in play): ${drawPile.length}</span>
+        <span class="pill">Pile 2 (won): ${wonPile.length} <span class="muted">(held: ${extrasTotal})</span></span>
+        <span class="pill">Pile 3 (dead): ${deadCount}</span>
       </div>
       ${players.map((p, i) => {
         const status = activeSet.has(i) ? "IN" : "OUT";
         const shooter = (i === currentIdx && activeSet.has(i)) ? `<span class="pill">SHOOTER</span>` : "";
         const extras = (p.extras?.length) ? `<span class="pill">EXTRA x${p.extras.length}</span>` : "";
-        return `${escapeHtml(p.name)} — ${escapeHtml(p.card)} — ${p.lives} lives ${extras} <span class="pill">${status}</span> ${shooter}`;
+        return `${escapeHtml(p.name)} — ${escapeHtml(p.card)} — ${totalLives(p)} lives ${extras} <span class="pill">${status}</span> ${shooter}`;
       }).join("<br>")}
     `;
   }
