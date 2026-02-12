@@ -12,7 +12,6 @@
     --chalk:#f7fcff;
     --btnText:#0b0b0b;
   }
-
   * { box-sizing: border-box; }
 
   body{
@@ -26,11 +25,7 @@
     padding: 18px 12px 28px;
   }
 
-  .frame{
-    width:min(560px, 100%);
-    text-align:center;
-    position:relative;
-  }
+  .frame{ width:min(560px, 100%); text-align:center; position:relative; }
 
   h1{
     margin: 10px 0 14px;
@@ -77,38 +72,14 @@
   button:active{ transform: translateY(1px) scale(.99); }
   button:hover{ filter: brightness(1.06); }
 
-  .secondary{
-    background: linear-gradient(180deg, rgba(61,152,219,1), rgba(40,115,175,1));
-    color: white;
-  }
-  .play{
-    background: linear-gradient(180deg, rgba(46,204,113,1), rgba(33,158,84,1));
-    color: var(--btnText);
-  }
-  .miss{
-    background: linear-gradient(180deg, rgba(230,126,34,1), rgba(190,92,12,1));
-    color: var(--btnText);
-  }
-  .pot{
-    background: linear-gradient(180deg, rgba(26,188,156,1), rgba(14,140,118,1));
-    color: var(--btnText);
-  }
-  .black{
-    background: linear-gradient(180deg, rgba(255,255,255,.22), rgba(0,0,0,.65));
-    border: 1px solid rgba(255,255,255,.22);
-    color: white;
-  }
-  .whiteball{
-    background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(225,225,225,.95));
-    color: #111;
-    border: 1px solid rgba(255,255,255,.45);
-  }
+  .secondary{ background: linear-gradient(180deg, rgba(61,152,219,1), rgba(40,115,175,1)); color: white; }
+  .play{ background: linear-gradient(180deg, rgba(46,204,113,1), rgba(33,158,84,1)); color: var(--btnText); }
+  .miss{ background: linear-gradient(180deg, rgba(230,126,34,1), rgba(190,92,12,1)); color: var(--btnText); }
+  .pot{ background: linear-gradient(180deg, rgba(26,188,156,1), rgba(14,140,118,1)); color: var(--btnText); }
+  .black{ background: linear-gradient(180deg, rgba(255,255,255,.22), rgba(0,0,0,.65)); border: 1px solid rgba(255,255,255,.22); color: white; }
+  .whiteball{ background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(225,225,225,.95)); color: #111; border: 1px solid rgba(255,255,255,.45); }
 
-  #results h2{
-    margin: 14px 0 8px;
-    font-size: 18px;
-    opacity: .95;
-  }
+  #results h2{ margin: 14px 0 8px; font-size: 18px; opacity: .95; }
 
   .dealRow{
     margin: 10px auto 0;
@@ -122,14 +93,11 @@
     justify-content: space-between;
     align-items:center;
     gap: 12px;
-
     opacity: 0;
     transform: translateY(18px);
     animation: dealIn .45s ease forwards;
   }
-  @keyframes dealIn{
-    to{ opacity:1; transform: translateY(0); }
-  }
+  @keyframes dealIn{ to{ opacity:1; transform: translateY(0); } }
   .dealName{ font-weight: 800; font-size: 18px; text-align:left; flex: 1; }
   .dealCardMini{
     font-weight: 900;
@@ -140,10 +108,7 @@
     min-width: 54px;
   }
 
-  .stage{
-    margin-top: 8px;
-    padding: 18px 12px 8px;
-  }
+  .stage{ margin-top: 8px; padding: 18px 12px 8px; }
 
   .nameBig{
     font-size: clamp(34px, 7vw, 58px);
@@ -153,29 +118,16 @@
     text-shadow: 0 14px 40px rgba(0,0,0,.55);
   }
 
-  .cardWrap{
-    display:flex;
-    justify-content:center;
-    margin: 10px 0 14px;
-    perspective: 1200px;
-  }
+  .cardWrap{ display:flex; justify-content:center; margin: 10px 0 14px; perspective: 1200px; }
   .card{
-    width: 210px;
-    height: 270px;
-    border-radius: 20px;
-    position: relative;
-    transform-style: preserve-3d;
-    box-shadow:
-      0 18px 55px rgba(0,0,0,.45),
-      0 0 0 1px rgba(255,255,255,.12);
+    width: 210px; height: 270px; border-radius: 20px;
+    position: relative; transform-style: preserve-3d;
+    box-shadow: 0 18px 55px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.12);
   }
 
   .cardFace, .cardBack{
-    position:absolute;
-    inset:0;
-    border-radius: 20px;
-    backface-visibility: hidden;
-    overflow:hidden;
+    position:absolute; inset:0; border-radius: 20px;
+    backface-visibility: hidden; overflow:hidden;
   }
 
   .cardBack{
@@ -186,15 +138,11 @@
       linear-gradient(180deg, rgba(24,24,24,.88), rgba(0,0,0,.88));
     border: 1px solid rgba(255,255,255,.16);
   }
-
   .cardBack::after{
     content:"🎱";
-    position:absolute;
-    inset:0;
-    display:grid;
-    place-items:center;
-    font-size: 64px;
-    opacity: .9;
+    position:absolute; inset:0;
+    display:grid; place-items:center;
+    font-size: 64px; opacity: .9;
     text-shadow: 0 10px 30px rgba(0,0,0,.55);
   }
 
@@ -208,43 +156,26 @@
   }
 
   .cardInner{
-    position:absolute;
-    inset: 14px;
+    position:absolute; inset: 14px;
     border-radius: 14px;
     border: 2px solid rgba(0,0,0,.08);
     background: rgba(255,255,255,.55);
-    display:flex;
-    flex-direction:column;
+    display:flex; flex-direction:column;
     justify-content:space-between;
     padding: 14px;
   }
 
-  .corner{
-    font-weight: 900;
-    font-size: 26px;
-    display:flex;
-    align-items:center;
-    gap: 8px;
-  }
-
-  .pip{
-    font-size: 22px;
-    opacity: .92;
-  }
-
+  .corner{ font-weight: 900; font-size: 26px; display:flex; align-items:center; gap: 8px; }
+  .pip{ font-size: 22px; opacity: .92; }
   .centerMark{
-    flex:1;
-    display:grid;
-    place-items:center;
-    font-weight: 950;
-    font-size: 84px;
+    flex:1; display:grid; place-items:center;
+    font-weight: 950; font-size: 84px;
     letter-spacing: 1px;
     text-shadow: 0 10px 26px rgba(0,0,0,.18);
   }
 
   .cardShine{
-    position:absolute;
-    inset:-40px;
+    position:absolute; inset:-40px;
     background: radial-gradient(260px 240px at var(--sx, 30%) var(--sy, 20%), rgba(255,255,255,.50), transparent 60%);
     transform: rotate(10deg);
     pointer-events:none;
@@ -259,62 +190,6 @@
     100%{ transform: rotateY(180deg) translateY(0); }
   }
 
-  #refBtn{
-    position: fixed;
-    top: 12px;
-    right: 12px;
-    width: auto;
-    max-width: none;
-    padding: 10px 12px;
-    border-radius: 999px;
-    font-size: 16px;
-    background: rgba(0,0,0,.28);
-    color: #fff;
-    border: 1px solid rgba(255,255,255,.18);
-    z-index: 1000;
-    display: none;
-    box-shadow: 0 10px 30px rgba(0,0,0,.40);
-  }
-
-  /* overlays are hidden by default */
-  #refOverlay{
-    display:none;
-    position:fixed;
-    inset:0;
-    background: rgba(0,0,0,.55);
-    color:#fff;
-    padding: 18px;
-    z-index:2000;
-    overflow:auto;
-  }
-  #refPanel{
-    width:min(560px, 100%);
-    margin: 0 auto;
-    text-align:center;
-  }
-  #refList{
-    margin: 14px auto 0;
-    width: 92%;
-    max-width: 460px;
-    text-align:left;
-    font-size: 18px;
-    line-height: 1.7;
-    padding: 12px 14px;
-    border-radius: 16px;
-    background: rgba(255,255,255,.10);
-    border: 1px solid rgba(255,255,255,.18);
-  }
-  .pill{
-    display:inline-block;
-    padding: 3px 10px;
-    border-radius: 999px;
-    background: rgba(255,255,255,.14);
-    border: 1px solid rgba(255,255,255,.16);
-    margin-left: 8px;
-    font-size: 14px;
-  }
-  .muted{ opacity:.85; }
-
   .btnRow{
     display:flex;
     gap: 10px;
@@ -322,76 +197,9 @@
     flex-wrap:wrap;
     margin-top: 8px;
   }
-  .btnRow button{
-    width: min(170px, 44%);
-    max-width:none;
-  }
+  .btnRow button{ width: min(170px, 44%); max-width:none; }
 
-  /* NEXT PLAYER FLASH */
-  #flashOverlay{
-    display:none;
-    position:fixed;
-    inset:0;
-    z-index:3000;
-    pointer-events:none;
-    background: radial-gradient(900px 520px at 50% 40%, rgba(255,255,255,.26), rgba(0,0,0,.55));
-  }
-  #flashText{
-    position:absolute;
-    inset:0;
-    display:grid;
-    place-items:center;
-    font-weight: 1000;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    font-size: clamp(48px, 10vw, 96px);
-    color: #fff;
-    text-shadow:
-      0 18px 60px rgba(0,0,0,.75),
-      0 0 18px rgba(255,255,255,.40);
-    transform: scale(.85);
-    opacity: 0;
-  }
-  .flashOn #flashText{
-    animation: flashPop 0.99s cubic-bezier(.2,.9,.2,1) forwards;
-  }
-  @keyframes flashPop{
-    0%{ opacity:0; transform: scale(.80); filter: blur(1px); }
-    35%{ opacity:1; transform: scale(1.04); filter: blur(0px); }
-    100%{ opacity:0; transform: scale(1.10); }
-  }
-
-  /* HAHA UNLUCKY */
-  #messageOverlay{
-    display:none;
-    position:fixed;
-    inset:0;
-    z-index:3100;
-    background: rgba(0,0,0,.55);
-    place-items:center;
-    pointer-events:none;
-  }
-  #messageText{
-    font-weight: 1000;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    font-size: clamp(44px, 9vw, 92px);
-    color: #fff;
-    text-shadow: 0 18px 60px rgba(0,0,0,.75);
-    transform: scale(.92);
-    opacity: 0;
-  }
-  .msgOn #messageText{
-    animation: msgBoom 2.0s cubic-bezier(.2,.9,.2,1) forwards;
-  }
-  @keyframes msgBoom{
-    0%{ opacity:0; transform: scale(.85); }
-    20%{ opacity:1; transform: scale(1.08); }
-    55%{ opacity:1; transform: scale(1.00); }
-    100%{ opacity:0; transform: scale(1.03); }
-  }
-
-  /* DECK ALERT */
+  /* Deck / reshuffle alert */
   #deckOverlay{
     display:none;
     position:fixed;
@@ -413,21 +221,45 @@
     padding: 0 14px;
     text-align:center;
   }
-  .deckOn #deckText{
-    animation: deckBoom 1.15s cubic-bezier(.2,.9,.2,1) forwards;
-  }
+  .deckOn #deckText{ animation: deckBoom 1.15s cubic-bezier(.2,.9,.2,1) forwards; }
   @keyframes deckBoom{
     0%{ opacity:0; transform: scale(.88); }
     20%{ opacity:1; transform: scale(1.06); }
     60%{ opacity:1; transform: scale(1.00); }
     100%{ opacity:0; transform: scale(1.02); }
   }
+
+  /* Haha unlucky */
+  #messageOverlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:3100;
+    background: rgba(0,0,0,.55);
+    place-items:center;
+    pointer-events:none;
+  }
+  #messageText{
+    font-weight: 1000;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: clamp(44px, 9vw, 92px);
+    color: #fff;
+    text-shadow: 0 18px 60px rgba(0,0,0,.75);
+    transform: scale(.92);
+    opacity: 0;
+  }
+  .msgOn #messageText{ animation: msgBoom 2.0s cubic-bezier(.2,.9,.2,1) forwards; }
+  @keyframes msgBoom{
+    0%{ opacity:0; transform: scale(.85); }
+    20%{ opacity:1; transform: scale(1.08); }
+    55%{ opacity:1; transform: scale(1.00); }
+    100%{ opacity:0; transform: scale(1.03); }
+  }
 </style>
 </head>
 
 <body>
-<button id="refBtn" onclick="toggleRef()">🧑‍⚖️ Ref</button>
-
 <div class="frame">
   <h1>🎱 Killer Pool</h1>
 
@@ -476,60 +308,46 @@
         <button class="whiteball" onclick="doAction('white')">⚪ White Ball Potted</button>
       </div>
 
-      <div class="muted" style="margin-top:12px;">
-        Ref can tap 🧑‍⚖️ Ref to see lives + piles.
-      </div>
+      <div id="piles" class="muted" style="margin-top:12px;"></div>
     </div>
 
   </div>
 </div>
 
-<div id="flashOverlay"><div id="flashText">NEXT PLAYER</div></div>
+<!-- HAHA UNLUCKY -->
 <div id="messageOverlay"><div id="messageText">HAHA UNLUCKY</div></div>
-<div id="deckOverlay"><div id="deckText">RESHUFFLE</div></div>
 
-<div id="refOverlay" onclick="toggleRef()">
-  <div id="refPanel" onclick="event.stopPropagation()">
-    <h2>🧑‍⚖️ Ref Mode</h2>
-    <div class="muted">Tap outside (or Ref) to close.</div>
-    <div id="refList"></div>
-    <button style="margin-top:12px;" onclick="toggleRef()">Close</button>
-  </div>
-</div>
+<!-- DECK ALERT -->
+<div id="deckOverlay"><div id="deckText">RESHUFFLE</div></div>
 
 <script>
   const baseDeck = ["A","K","Q","J","10","9","8","7","6","5","4","3","2"];
 
-  // Players: { name, card, baseLives, extras: [] }
+  // Players: { name, card, lives }
   let players = [];
   let activePlayers = [];
   let currentIdx = null;
-  let transitioning = false;
 
   // Piles:
-  // Pile 1 = drawPile (the "lives in play" pack)
-  // Pile 2 = wonPile (tokens won from pot/black; reshuffled back into pile 1 when pile 1 empty)
-  // Pile 3 = deadCount (miss/white dead forever)
-  let drawPile = [];    // Pile 1
-  let wonPile = [];     // Pile 2
-  let deadCount = 0;    // Pile 3
+  // Pile 1 = drawPile (tokens still "in play")
+  // Pile 2 = bankPile (tokens banked by pot/black)
+  // Pile 3 = deadCount (miss/white, dead forever)
+  let drawPile = [];     // Pile 1
+  let bankPile = [];     // Pile 2
+  let deadCount = 0;     // Pile 3
 
-  function shuffle(arr) {
+  function shuffle(arr){
     const a = [...arr];
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
+    for(let i=a.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
     }
     return a;
   }
 
-  function totalLives(p){
-    return Math.max(0, p.baseLives) + (p.extras?.length || 0);
-  }
-
-  function addPlayer() {
+  function addPlayer(){
     const count = document.querySelectorAll("#playerList input").length;
-    if (count >= 13) return alert("Maximum 13 players (A–2).");
+    if(count >= 13) return alert("Maximum 13 players (A–2).");
     const input = document.createElement("input");
     input.placeholder = "Player name";
     document.getElementById("playerList").appendChild(input);
@@ -539,12 +357,10 @@
     const overlay = document.getElementById("deckOverlay");
     const label = document.getElementById("deckText");
     label.textContent = text;
-
     overlay.style.display = "grid";
     overlay.classList.remove("deckOn");
     void overlay.offsetWidth;
     overlay.classList.add("deckOn");
-
     setTimeout(() => {
       overlay.classList.remove("deckOn");
       overlay.style.display = "none";
@@ -564,30 +380,28 @@
   }
 
   // Take 1 token from Pile 1.
-  // If Pile 1 empty -> reshuffle all of Pile 2 into Pile 1.
-  function takeFromPile1(){
-    if (drawPile.length === 0) {
-      if (wonPile.length > 0) {
+  // If Pile 1 empty -> reshuffle Pile 2 into Pile 1.
+  function takeTokenFromPile1(){
+    if(drawPile.length === 0){
+      if(bankPile.length > 0){
         showDeckAlert("PILE 1 EMPTY — RESHUFFLING PILE 2");
-        drawPile = shuffle(wonPile);
-        wonPile = [];
+        drawPile = shuffle(bankPile);
+        bankPile = [];
       } else {
-        showDeckAlert("NO CARDS LEFT");
+        showDeckAlert("NO TOKENS LEFT");
         return null;
       }
     }
     return drawPile.pop() || null;
   }
 
-  function drawCards() {
+  function drawCards(){
     players = [];
     activePlayers = [];
     currentIdx = null;
-    transitioning = false;
-
-    wonPile = [];
-    deadCount = 0;
     drawPile = [];
+    bankPile = [];
+    deadCount = 0;
 
     const results = document.getElementById("results");
     results.innerHTML = "<h2>Dealing Cards…</h2>";
@@ -596,24 +410,24 @@
       .map(i => i.value.trim())
       .filter(Boolean);
 
-    if (names.length === 0) {
+    if(names.length === 0){
       results.innerHTML = "<h2>Please enter at least 1 name.</h2>";
       document.getElementById("startBtn").style.display = "none";
       return;
     }
-    if (names.length > 13) {
+    if(names.length > 13){
       results.innerHTML = "<h2>Max 13 players.</h2>";
       document.getElementById("startBtn").style.display = "none";
       return;
     }
 
-    // Deal ONE fixed card per player (their card never changes)
+    // Deal ONE fixed card per player (never changes)
     const deck = shuffle(baseDeck);
     let delay = 0;
 
     names.forEach(name => {
       const card = deck.pop();
-      players.push({ name, card, baseLives: 3, extras: [] });
+      players.push({ name, card, lives: 3 });
 
       setTimeout(() => {
         const row = document.createElement("div");
@@ -628,123 +442,75 @@
       delay += 220;
     });
 
-    // Remaining undealt cards become Pile 1 (lives in play pack)
+    // Remaining undealt cards are the initial "tokens in play" (Pile 1)
     drawPile = shuffle(deck);
 
     setTimeout(() => {
       document.getElementById("startBtn").style.display = "inline-block";
-      refreshRefList();
+      updatePilesLine();
     }, delay + 120);
   }
 
-  function startGame() {
-    if (players.length === 0) return;
-
-    activePlayers = players.map((_, i) => i);
-
+  function startGame(){
+    if(players.length === 0) return;
+    activePlayers = players.map((_,i)=>i);
     document.getElementById("setup").style.display = "none";
     document.getElementById("game").style.display = "block";
-    document.getElementById("refBtn").style.display = "inline-block";
-
-    transitionToNextShooter(true);
+    nextShooter();
   }
 
-  function showNextPlayerFlash(durationMs){
-    const overlay = document.getElementById("flashOverlay");
-    overlay.style.display = "block";
-    overlay.classList.remove("flashOn");
-    void overlay.offsetWidth;
-    overlay.classList.add("flashOn");
-    setTimeout(() => {
-      overlay.classList.remove("flashOn");
-      overlay.style.display = "none";
-    }, durationMs);
-  }
-
-  function transitionToNextShooter(isFirst=false) {
-    if (activePlayers.length === 1) {
+  function nextShooter(){
+    // winner
+    if(activePlayers.length === 1){
       const w = players[activePlayers[0]];
       document.getElementById("currentName").textContent = `🏆 ${w.name} WINS`;
       flipTo(w.card);
-      refreshRefList();
+      updatePilesLine();
       return;
     }
 
-    if (activePlayers.length === 0) {
-      document.getElementById("currentName").textContent = "Game Over";
-      setCardValue("—");
-      return;
-    }
-
-    if (transitioning) return;
-    transitioning = true;
-
-    showNextPlayerFlash(isFirst ? 450 : 650);
-
-    setTimeout(() => {
-      pickShooter();
-      transitioning = false;
-    }, isFirst ? 250 : 380);
-  }
-
-  function pickShooter(){
-    currentIdx = activePlayers[Math.floor(Math.random() * activePlayers.length)];
+    currentIdx = activePlayers[Math.floor(Math.random()*activePlayers.length)];
     const p = players[currentIdx];
-    document.getElementById("currentName").textContent = p.name;
+    document.getElementById("currentName").textContent = `${p.name} — ${p.lives} lives`;
     flipTo(p.card);
-    refreshRefList();
+    updatePilesLine();
   }
 
-  function maybeEliminateCurrent(){
-    const p = players[currentIdx];
-    if (p.baseLives <= 0 && (p.extras?.length || 0) === 0) {
-      activePlayers = activePlayers.filter(i => i !== currentIdx);
-    }
-  }
-
-  // GAME ACTIONS (your rules):
-  // - Pot: take 1 token from Pile 1 -> move it to Pile 2 -> player gains +1 extra life. Player's card stays the same.
-  // - Black: same as Pot (+1 extra life; token moved Pile 1 -> Pile 2).
-  // - Miss/White: lose a life (remove extra first, otherwise base). The lost life is dead forever (Pile 3).
-  function doAction(type) {
-    if (currentIdx === null || transitioning) return;
+  // RULES YOU ASKED FOR:
+  // - Pot / Black: bank 1 token into Pile 2 (does NOT change player lives immediately)
+  // - Miss / White: lose 1 life (dead forever)
+  // - Reshuffle when Pile 1 empty and we need to bank again
+  function doAction(type){
+    if(currentIdx === null) return;
     const p = players[currentIdx];
 
-    if (type === "pot" || type === "black") {
-      const token = takeFromPile1();
-      if (!token) { transitionToNextShooter(false); return; }
-
-      wonPile.push(token);   // moved into Pile 2
-      p.extras.push(token);  // player earned/holds it
-
-      showDeckAlert("+1 LIFE", 850);
-      refreshRefList();
-      transitionToNextShooter(false);
-      return;
-    }
-
-    if (type === "white") showHahaUnlucky();
-
-    if (type === "miss" || type === "white") {
-      // lose life: extra first, else base
-      if (p.extras.length > 0) {
-        p.extras.pop();
-
-        // also remove one token from Pile 2 (that earned life is now gone)
-        if (wonPile.length > 0) wonPile.pop();
-      } else {
-        p.baseLives -= 1;
+    if(type === "pot" || type === "black"){
+      const token = takeTokenFromPile1();
+      if(token){
+        bankPile.push(token);  // ✅ banked in pile 2 (NOT used immediately)
       }
-
-      deadCount += 1;
-      maybeEliminateCurrent();
-      refreshRefList();
-
-      if (type === "white") setTimeout(() => transitionToNextShooter(false), 350);
-      else transitionToNextShooter(false);
-
+      nextShooter();
       return;
     }
+
+    if(type === "white"){
+      showHahaUnlucky();
+    }
+
+    if(type === "miss" || type === "white"){
+      p.lives -= 1;
+      deadCount += 1;
+      if(p.lives <= 0){
+        activePlayers = activePlayers.filter(i => i !== currentIdx);
+      }
+      setTimeout(() => nextShooter(), type === "white" ? 350 : 0);
+      return;
+    }
+  }
+
+  function updatePilesLine(){
+    document.getElementById("piles").textContent =
+      `Pile 1 (in play): ${drawPile.length}  •  Pile 2 (banked): ${bankPile.length}  •  Pile 3 (dead): ${deadCount}`;
   }
 
   function setCardValue(v){
@@ -769,39 +535,6 @@
     shine.style.setProperty("--sy", y + "%");
   });
 
-  function toggleRef() {
-    const overlay = document.getElementById("refOverlay");
-    const open = overlay.style.display !== "block";
-    if (open) {
-      refreshRefList();
-      overlay.style.display = "block";
-    } else {
-      overlay.style.display = "none";
-    }
-  }
-
-  function refreshRefList() {
-    const refList = document.getElementById("refList");
-    const activeSet = new Set(activePlayers);
-
-    const extrasTotal = players.reduce((sum,p)=>sum + (p.extras?.length||0), 0);
-
-    refList.innerHTML = `
-      <div style="margin-bottom:10px;">
-        <strong>Piles:</strong>
-        <span class="pill">Pile 1 (in play): ${drawPile.length}</span>
-        <span class="pill">Pile 2 (won): ${wonPile.length} <span class="muted">(held: ${extrasTotal})</span></span>
-        <span class="pill">Pile 3 (dead): ${deadCount}</span>
-      </div>
-      ${players.map((p, i) => {
-        const status = activeSet.has(i) ? "IN" : "OUT";
-        const shooter = (i === currentIdx && activeSet.has(i)) ? `<span class="pill">SHOOTER</span>` : "";
-        const extras = (p.extras?.length) ? `<span class="pill">EXTRA x${p.extras.length}</span>` : "";
-        return `${escapeHtml(p.name)} — ${escapeHtml(p.card)} — ${totalLives(p)} lives ${extras} <span class="pill">${status}</span> ${shooter}`;
-      }).join("<br>")}
-    `;
-  }
-
   function escapeHtml(str){
     return String(str)
       .replaceAll("&","&amp;")
@@ -811,7 +544,6 @@
       .replaceAll("'","&#039;");
   }
 
-  // Start with 2 inputs
   addPlayer();
   addPlayer();
 </script>
