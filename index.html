@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Killer Pool</title>
+
+<style>
+  :root{
+    --felt1:#1f8a6a;
+    --felt2:#0f5f4a;
+    --chalk:#f7fcff;
+    --btnText:#0b0b0b;
+  }
+  * { box-sizing: border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    background: linear-gradient(180deg, #5fd3a4, #2fbf8f);
+    color: #ffffff;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    padding: 18px 12px 28px;
+  }
+
+  .frame{
+    width:min(560px, 100%);
+    text-align:center;
+    position:relative;
+  }
+
+  h1{
+    margin: 10px 0 14px;
+    font-weight: 900;
+    letter-spacing: .5px;
+    text-shadow: 0 8px 30px rgba(0,0,0,.45);
+  }
+
+  .rail{
+    border-radius: 18px;
+    padding: 14px 12px 18px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  }
+
+  input, button{
+    width: 92%;
+    max-width: 320px;
+    padding: 12px 14px;
+    margin: 7px 0;
+    font-size: 18px;
+    border-radius: 14px;
+    border: none;
+    outline: none;
+  }
+
+  input{
+    background: rgba(255,255,255,.16);
+    color: var(--chalk);
+    border: 1px solid rgba(255,255,255,.22);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.10);
+    text-align:center;
+  }
+  input::placeholder{ color: rgba(247,252,255,.72); }
+
+  button{
+    font-weight: 900;
+    letter-spacing: .3px;
+    cursor:pointer;
+    transform: translateY(0);
+    transition: transform .08s ease, filter .15s ease;
+  }
+  button:active{ transform: translateY(1px) scale(.99); }
+  button:hover{ filter: brightness(1.06); }
+
+  .secondary{
+    background: linear-gradient(180deg, rgba(61,152,219,1), rgba(40,115,175,1));
+    color: white;
+  }
+  .play{
+    background: linear-gradient(180deg, rgba(46,204,113,1), rgba(33,158,84,1));
+    color: var(--btnText);
+  }
+  .miss{
+    background: linear-gradient(180deg, rgba(230,126,34,1), rgba(190,92,12,1));
+    color: var(--btnText);
+  }
+  .pot{
+    background: linear-gradient(180deg, rgba(26,188,156,1), rgba(14,140,118,1));
+    color: var(--btnText);
+  }
+  .black{
+    background: linear-gradient(180deg, rgba(255,255,255,.22), rgba(0,0,0,.65));
+    border: 1px solid rgba(255,255,255,.22);
+    color: white;
+  }
+  .whiteball{
+    background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(225,225,225,.95));
+    color: #111;
+    border: 1px solid rgba(255,255,255,.45);
+  }
+
+  #results h2{
+    margin: 14px 0 8px;
+    font-size: 18px;
+    opacity: .95;
+  }
+
+  .dealRow{
+    margin: 10px auto 0;
+    width: 92%;
+    max-width: 420px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.14);
+
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    gap: 12px;
+
+    opacity: 0;
+    transform: translateY(18px);
+    animation: dealIn .45s ease forwards;
+  }
+  @keyframes dealIn{
+    to{ opacity:1; transform: translateY(0); }
+  }
+  .dealName{ font-weight: 800; font-size: 18px; text-align:left; flex: 1; }
+  .dealCardMini{
+    font-weight: 900;
+    padding: 6px 12px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.18);
+    min-width: 54px;
+  }
+
+  .stage{
+    margin-top: 8px;
+    padding: 18px 12px 8px;
+  }
+
+  .nameBig{
+    font-size: clamp(34px, 7vw, 58px);
+    font-weight: 950;
+    letter-spacing: .5px;
+    margin: 8px 0 10px;
+    text-shadow: 0 14px 40px rgba(0,0,0,.55);
+  }
+
+  .cardWrap{
+    display:flex;
+    justify-content:center;
+    margin: 10px 0 14px;
+    perspective: 1200px;
+  }
+  .card{
+    width: 210px;
+    height: 270px;
+    border-radius: 20px;
+    position: relative;
+    transform-style: preserve-3d;
+    box-shadow:
+      0 18px 55px rgba(0,0,0,.45),
+      0 0 0 1px rgba(255,255,255,.12);
+  }
+
+  .cardFace, .cardBack{
+    position:absolute;
+    inset:0;
+    border-radius: 20px;
+    backface-visibility: hidden;
+    overflow:hidden;
+  }
+
+  .cardBack{
+    transform: rotateY(0deg);
+    background:
+      radial-gradient(260px 220px at 30% 20%, rgba(255,255,255,.22), transparent 60%),
+      repeating-linear-gradient(45deg, rgba(255,255,255,.10) 0 8px, rgba(0,0,0,.08) 8px 16px),
+      linear-gradient(180deg, rgba(24,24,24,.88), rgba(0,0,0,.88));
+    border: 1px solid rgba(255,255,255,.16);
+  }
+
+  .cardBack::after{
+    content:"🎱";
+    position:absolute;
+    inset:0;
+    display:grid;
+    place-items:center;
+    font-size: 64px;
+    opacity: .9;
+    text-shadow: 0 10px 30px rgba(0,0,0,.55);
+  }
+
+  .cardFace{
+    transform: rotateY(180deg);
+    background:
+      radial-gradient(400px 240px at 35% 0%, rgba(255,255,255,.28), transparent 60%),
+      linear-gradient(180deg, rgba(255,255,255,.94), rgba(245,245,245,.90));
+    color:#111;
+    border: 1px solid rgba(255,255,255,.82);
+  }
+
+  .cardInner{
+    position:absolute;
+    inset: 14px;
+    border-radius: 14px;
+    border: 2px solid rgba(0,0,0,.08);
+    background: rgba(255,255,255,.55);
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    padding: 14px;
+  }
+
+  .corner{
+    font-weight: 900;
+    font-size: 26px;
+    display:flex;
+    align-items:center;
+    gap: 8px;
+  }
+
+  .pip{
+    font-size: 22px;
+    opacity: .92;
+  }
+
+  .centerMark{
+    flex:1;
+    display:grid;
+    place-items:center;
+    font-weight: 950;
+    font-size: 84px;
+    letter-spacing: 1px;
+    text-shadow: 0 10px 26px rgba(0,0,0,.18);
+  }
+
+  .cardShine{
+    position:absolute;
+    inset:-40px;
+    background: radial-gradient(260px 240px at var(--sx, 30%) var(--sy, 20%), rgba(255,255,255,.50), transparent 60%);
+    transform: rotate(10deg);
+    pointer-events:none;
+    mix-blend-mode: screen;
+    opacity: .50;
+  }
+
+  .flipIn{ animation: flipIn .65s cubic-bezier(.22,.8,.2,1) forwards; }
+  @keyframes flipIn{
+    0%{ transform: rotateY(0deg) translateY(10px); }
+    65%{ transform: rotateY(190deg) translateY(0); }
+    100%{ transform: rotateY(180deg) translateY(0); }
+  }
+
+  #refBtn{
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    width: auto;
+    max-width: none;
+    padding: 10px 12px;
+    border-radius: 999px;
+    font-size: 16px;
+    background: rgba(0,0,0,.28);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.18);
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,.40);
+  }
+
+  #refOverlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background: rgba(0,0,0,.82);
+    color:#fff;
+    padding: 18px;
+    z-index:2000;
+    overflow:auto;
+  }
+  #refPanel{
+    width:min(560px, 100%);
+    margin: 0 auto;
+    text-align:center;
+  }
+  #refList{
+    margin: 14px auto 0;
+    width: 92%;
+    max-width: 460px;
+    text-align:left;
+    font-size: 18px;
+    line-height: 1.7;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.14);
+  }
+  .pill{
+    display:inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.12);
+    margin-left: 8px;
+    font-size: 14px;
+  }
+  .muted{ opacity:.78; }
+
+  .btnRow{
+    display:flex;
+    gap: 10px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-top: 8px;
+  }
+  .btnRow button{
+    width: min(170px, 44%);
+    max-width:none;
+  }
+
+  /* ---------- BIG NEXT PLAYER FLASH ---------- */
+  #flashOverlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:3000;
+    pointer-events:none;
+    background: radial-gradient(900px 520px at 50% 40%, rgba(255,255,255,.26), rgba(0,0,0,.72));
+  }
+  #flashText{
+    position:absolute;
+    inset:0;
+    display:grid;
+    place-items:center;
+    font-weight: 1000;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: clamp(48px, 10vw, 96px);
+    color: #fff;
+    text-shadow:
+      0 18px 60px rgba(0,0,0,.75),
+      0 0 18px rgba(255,255,255,.40);
+    transform: scale(.85);
+    opacity: 0;
+  }
+  .flashOn #flashText{
+    animation: flashPop 0.99s cubic-bezier(.2,.9,.2,1) forwards;
+  }
+  @keyframes flashPop{
+    0%{ opacity:0; transform: scale(.80); filter: blur(1px); }
+    35%{ opacity:1; transform: scale(1.04); filter: blur(0px); }
+    100%{ opacity:0; transform: scale(1.10); }
+  }
+
+  /* ---------- HAHA UNLUCKY MESSAGE ---------- */
+  #messageOverlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:3100;
+    background: rgba(0,0,0,.78);
+    display:grid;
+    place-items:center;
+    pointer-events:none;
+  }
+  #messageText{
+    font-weight: 1000;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: clamp(44px, 9vw, 92px);
+    color: #fff;
+    text-shadow: 0 18px 60px rgba(0,0,0,.75);
+    transform: scale(.92);
+    opacity: 0;
+  }
+  .msgOn #messageText{
+    animation: msgBoom 2.5s cubic-bezier(.2,.9,.2,1) forwards;
+  }
+  @keyframes msgBoom{
+    0%{ opacity:0; transform: scale(.85); }
+    20%{ opacity:1; transform: scale(1.08); }
+    55%{ opacity:1; transform: scale(1.00); }
+    100%{ opacity:0; transform: scale(1.03); }
+  }
+
+  /* ---------- DECK ALERTS (RESHUFFLE / ALL IN PLAY / NO SPARES) ---------- */
+  #deckOverlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:3200;
+    pointer-events:none;
+    background: rgba(0,0,0,.65);
+    display:grid;
+    place-items:center;
+  }
+  #deckText{
+    font-weight: 1000;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: clamp(34px, 7vw, 80px);
+    color: #fff;
+    text-shadow: 0 18px 60px rgba(0,0,0,.75);
+    transform: scale(.92);
+    opacity: 0;
+  }
+  .deckOn #deckText{
+    animation: deckBoom 1.2s cubic-bezier(.2,.9,.2,1) forwards;
+  }
+  @keyframes deckBoom{
+    0%{ opacity:0; transform: scale(.88); }
+    20%{ opacity:1; transform: scale(1.06); }
+    60%{ opacity:1; transform: scale(1.00); }
+    100%{ opacity:0; transform: scale(1.02); }
+  }
+</style>
+</head>
+
+<body>
+<button id="refBtn" onclick="toggleRef()">🧑‍⚖️ Ref</button>
+
+<div class="frame">
+  <h1>🎱 Killer Pool</h1>
+
+  <div class="rail">
+
+    <!-- SETUP -->
+    <div id="setup">
+      <div id="playerList"></div>
+
+      <button class="secondary" onclick="addPlayer()">➕ Add Player</button>
+      <button onclick="drawCards()">🎴 Draw Cards</button>
+
+      <div id="results"></div>
+
+      <button id="startBtn" class="play" onclick="startGame()" style="display:none;">
+        ▶️ Play Game
+      </button>
+    </div>
+
+    <!-- GAME -->
+    <div id="game" class="stage" style="display:none;">
+      <div class="nameBig" id="currentName"></div>
+
+      <div class="cardWrap">
+        <div class="card" id="card3d" aria-label="Card">
+          <div class="cardBack"></div>
+          <div class="cardFace">
+            <div class="cardShine" id="shine"></div>
+            <div class="cardInner">
+              <div class="corner">
+                <span id="cornerTop">A</span><span class="pip">🎱</span>
+              </div>
+              <div class="centerMark" id="centerVal">A</div>
+              <div class="corner" style="justify-content:flex-end;">
+                <span class="pip">🎱</span><span id="cornerBottom">A</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btnRow">
+        <button class="miss" onclick="doAction('miss')">❌ Miss</button>
+        <button class="pot" onclick="doAction('pot')">🎯 Pot</button>
+        <button class="black" onclick="doAction('black')">⚫ Black Ball</button>
+        <button class="whiteball" onclick="doAction('white')">⚪ White Ball Potted</button>
+      </div>
+
+      <div class="muted" style="margin-top:12px;">
+        Ref can tap 🧑‍⚖️ Ref to see lives + piles.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- NEXT PLAYER FLASH -->
+<div id="flashOverlay">
+  <div id="flashText">NEXT PLAYER</div>
+</div>
+
+<!-- HAHA UNLUCKY -->
+<div id="messageOverlay">
+  <div id="messageText">HAHA UNLUCKY</div>
+</div>
+
+<!-- DECK / RESHUFFLE ALERTS -->
+<div id="deckOverlay">
+  <div id="deckText">RESHUFFLE</div>
+</div>
+
+<!-- REF OVERLAY -->
+<div id="refOverlay" onclick="toggleRef()">
+  <div id="refPanel" onclick="event.stopPropagation()">
+    <h2>🧑‍⚖️ Ref Mode</h2>
+    <div class="muted">Tap outside (or Ref) to close.</div>
+    <div id="refList"></div>
+    <button style="margin-top:12px;" onclick="toggleRef()">Close</button>
+  </div>
+</div>
+
+<script>
+  // Cards (A–2)
+  const baseDeck = ["A","K","Q","J","10","9","8","7","6","5","4","3","2"];
+
+  // Players: { name, card, lives, extras[] }
+  let players = [];
+  let activePlayers = [];
+  let currentIdx = null;
+  let transitioning = false;
+
+  // Piles / draw system:
+  // - Pile 1 = cards currently assigned to players (players[].card) + extra-life balls (players[].extras)
+  // - Draw pile = undealt cards at start, then refilled by reshuffling recycle pile
+  // - Recycle pile (Pile 2) = cards that left play due to POT (your card got potted) (reshuffled back in)
+  // - Dead bin (Pile 3) = miss/white (dead forever; never reused)
+  let drawPile = [];
+  let pileRecycle = [];
+  let pileDead = [];
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function showDeckAlert(text, ms = 1100) {
+    const overlay = document.getElementById("deckOverlay");
+    const label = document.getElementById("deckText");
+    label.textContent = text;
+
+    overlay.style.display = "grid";
+    overlay.classList.remove("deckOn");
+    void overlay.offsetWidth; // restart animation
+    overlay.classList.add("deckOn");
+
+    setTimeout(() => {
+      overlay.classList.remove("deckOn");
+      overlay.style.display = "none";
+    }, ms);
+  }
+
+  // Create draw pile from undealt cards only (spares).
+  function initDrawFromUndealt(dealtCards) {
+    const dealt = new Set(dealtCards);
+    const undealt = baseDeck.filter(c => !dealt.has(c));
+    drawPile = shuffle(undealt);
+    pileRecycle = [];
+    pileDead = [];
+  }
+
+  // If draw pile is empty:
+  // - if recycle has cards -> reshuffle recycle into draw pile (RESHUFFLE alert)
+  // - else -> nothing left to draw (ALL CARDS IN PLAY alert)
+  function drawNextCard() {
+    if (drawPile.length === 0) {
+      if (pileRecycle.length > 0) {
+        showDeckAlert("RESHUFFLE");
+        drawPile = shuffle(pileRecycle);
+        pileRecycle = [];
+      } else {
+        showDeckAlert("ALL CARDS IN PLAY");
+        return null;
+      }
+    }
+    return drawPile.pop() || null;
+  }
+
+  // --- UI setup ---
+  function addPlayer() {
+    const count = document.querySelectorAll("#playerList input").length;
+    if (count >= 13) {
+      alert("Maximum 13 players (A–2).");
+      return;
+    }
+    const input = document.createElement("input");
+    input.placeholder = "Player name";
+    document.getElementById("playerList").appendChild(input);
+  }
+
+  function drawCards() {
+    players = [];
+    activePlayers = [];
+    currentIdx = null;
+
+    const results = document.getElementById("results");
+    results.innerHTML = "<h2>Dealing Cards…</h2>";
+
+    const names = [...document.querySelectorAll("#playerList input")]
+      .map(i => i.value.trim())
+      .filter(Boolean);
+
+    if (names.length === 0) {
+      results.innerHTML = "<h2>Please enter at least 1 name.</h2>";
+      document.getElementById("startBtn").style.display = "none";
+      return;
+    }
+    if (names.length > 13) {
+      results.innerHTML = "<h2>Max 13 players.</h2>";
+      document.getElementById("startBtn").style.display = "none";
+      return;
+    }
+
+    // Deal ONE card to each player (Pile 1 starts here)
+    const deck = shuffle(baseDeck);
+    const dealtCards = [];
+    let delay = 0;
+
+    names.forEach(name => {
+      const card = deck.pop();
+      dealtCards.push(card);
+
+      players.push({ name, card, lives: 3, extras: [] });
+
+      setTimeout(() => {
+        const row = document.createElement("div");
+        row.className = "dealRow";
+        row.innerHTML = `
+          <div class="dealName">${escapeHtml(name)}</div>
+          <div class="dealCardMini">${escapeHtml(card)}</div>
+        `;
+        results.appendChild(row);
+      }, delay);
+
+      delay += 260;
+    });
+
+    setTimeout(() => {
+      // Draw pile becomes the undealt spares; recycle/dead start empty.
+      initDrawFromUndealt(dealtCards);
+
+      document.getElementById("startBtn").style.display = "inline-block";
+
+      // If no spares + no recycle, then literally every card is already in play.
+      if (drawPile.length === 0 && pileRecycle.length === 0) {
+        showDeckAlert("ALL CARDS IN PLAY");
+      }
+    }, delay + 120);
+  }
+
+  function startGame() {
+    if (players.length === 0) return;
+
+    activePlayers = players.map((_, i) => i);
+
+    document.getElementById("setup").style.display = "none";
+    document.getElementById("game").style.display = "block";
+    document.getElementById("refBtn").style.display = "inline-block";
+
+    transitionToNextShooter(true);
+  }
+
+  // --- Turn transitions with NEXT PLAYER flash ---
+  function transitionToNextShooter(isFirst=false) {
+    // Winner check
+    if (activePlayers.length === 1) {
+      const w = players[activePlayers[0]];
+      document.getElementById("currentName").textContent = `🏆 ${w.name} WINS`;
+      flipTo(w.card || "—");
+      refreshRefList();
+      return;
+    }
+
+    if (activePlayers.length === 0) {
+      document.getElementById("currentName").textContent = "Game Over";
+      setCardValue("—");
+      return;
+    }
+
+    if (transitioning) return;
+    transitioning = true;
+
+    showNextPlayerFlash(isFirst ? 450 : 650);
+
+    setTimeout(() => {
+      pickShooter();
+      transitioning = false;
+    }, isFirst ? 250 : 380);
+  }
+
+  function pickShooter(){
+    currentIdx = activePlayers[Math.floor(Math.random() * activePlayers.length)];
+    const p = players[currentIdx];
+    document.getElementById("currentName").textContent = p.name;
+    flipTo(p.card);
+    refreshRefList();
+  }
+
+  function showNextPlayerFlash(durationMs){
+    const overlay = document.getElementById("flashOverlay");
+    overlay.style.display = "block";
+    overlay.classList.remove("flashOn");
+    void overlay.offsetWidth;
+    overlay.classList.add("flashOn");
+
+    setTimeout(() => {
+      overlay.classList.remove("flashOn");
+      overlay.style.display = "none";
+    }, durationMs);
+  }
+
+  function showHahaUnlucky(){
+    const overlay = document.getElementById("messageOverlay");
+    overlay.style.display = "grid";
+    overlay.classList.remove("msgOn");
+    void overlay.offsetWidth;
+    overlay.classList.add("msgOn");
+
+    setTimeout(() => {
+      overlay.classList.remove("msgOn");
+      overlay.style.display = "none";
+    }, 1000);
+  }
+
+  // ---- RULES IMPLEMENTED ----
+  // ❌ Miss: lose 1 life. If player has an extra-life ball, that extra is lost (dead). Otherwise just lose base life.
+  // 🎯 Pot: your CURRENT assigned card is considered "potted" -> goes to recycle pile (Pile 2). You draw a NEW assigned card from draw pile.
+  // ⚫ Black Ball: you KEEP your assigned card, gain +1 life by taking 1 spare card from draw pile as an extra-life ball.
+  // ⚪ White Ball potted: lose 1 life; treated like dead forever (Pile 3). Also consumes an extra-life ball if you have one.
+  function doAction(type) {
+    if (currentIdx === null || transitioning) return;
+    const p = players[currentIdx];
+
+    // Helper: apply a life loss and mark dead bin usage
+    function applyLifeLossDead() {
+      p.lives -= 1;
+      pileDead.push("X"); // just a counter marker for dead bin
+      if (p.extras.length > 0) {
+        // lose an extra-life ball first (dead forever)
+        const lost = p.extras.pop();
+        pileDead.push(lost);
+      }
+      if (p.lives <= 0) {
+        // OUT
+        activePlayers = activePlayers.filter(i => i !== currentIdx);
+      }
+    }
+
+    if (type === "miss") {
+      applyLifeLossDead();
+      transitionToNextShooter(false);
+      return;
+    }
+
+    if (type === "white") {
+      showHahaUnlucky();
+      applyLifeLossDead();
+      setTimeout(() => transitionToNextShooter(false), 350);
+      return;
+    }
+
+    if (type === "pot") {
+      // Your assigned card leaves play -> recycle (can be reshuffled later)
+      if (p.card && p.card !== "—") pileRecycle.push(p.card);
+
+      const next = drawNextCard();
+      if (next) {
+        p.card = next;
+        flipTo(p.card);
+      } else {
+        // No cards to draw (all in play) -> keep current card as-is
+        // (If you prefer to show "—", change this)
+        // p.card = "—";
+      }
+
+      transitionToNextShooter(false);
+      return;
+    }
+
+    if (type === "black") {
+      const spare = drawNextCard();
+      if (!spare) {
+        showDeckAlert("NO SPARES");
+        transitionToNextShooter(false);
+        return;
+      }
+      p.lives += 1;
+      p.extras.push(spare); // keep same assigned card; store the extra-life ball
+      showDeckAlert("+1 LIFE");
+      transitionToNextShooter(false);
+      return;
+    }
+  }
+
+  function setCardValue(v){
+    document.getElementById("cornerTop").textContent = v;
+    document.getElementById("centerVal").textContent = v;
+    document.getElementById("cornerBottom").textContent = v;
+  }
+
+  function flipTo(value){
+    const card = document.getElementById("card3d");
+    card.classList.remove("flipIn");
+    void card.offsetWidth;
+    setCardValue(value);
+    card.classList.add("flipIn");
+  }
+
+  document.addEventListener("pointermove", (e) => {
+    const shine = document.getElementById("shine");
+    const x = (e.clientX / window.innerWidth) * 100;
+    const y = (e.clientY / window.innerHeight) * 100;
+    shine.style.setProperty("--sx", x + "%");
+    shine.style.setProperty("--sy", y + "%");
+  });
+
+  function toggleRef() {
+    const overlay = document.getElementById("refOverlay");
+    const open = overlay.style.display !== "block";
+    if (open) {
+      refreshRefList();
+      overlay.style.display = "block";
+    } else {
+      overlay.style.display = "none";
+    }
+  }
+
+  function countPile1InPlayCards(){
+    // Assigned card for each active player + their extras
+    const activeSet = new Set(activePlayers);
+    let inPlay = 0;
+    players.forEach((p, i) => {
+      if (!activeSet.has(i)) return;
+      if (p.card && p.card !== "—") inPlay += 1;
+      inPlay += (p.extras?.length || 0);
+    });
+    return inPlay;
+  }
+
+  function refreshRefList() {
+    const refList = document.getElementById("refList");
+    const activeSet = new Set(activePlayers);
+
+    const pile1 = countPile1InPlayCards();
+    const pile2 = pileRecycle.length;
+    const pile3 = pileDead.length;
+    const draw = drawPile.length;
+
+    const header = `
+      <div style="margin-bottom:10px;">
+        <strong>Piles:</strong>
+        <span class="pill">IN PLAY (P1): ${pile1}</span>
+        <span class="pill">RECYCLE (P2): ${pile2}</span>
+        <span class="pill">DEAD (P3): ${pile3}</span>
+        <span class="pill">SPARES: ${draw}</span>
+      </div>
+    `;
+
+    const lines = players.map((p, i) => {
+      const status = activeSet.has(i) ? "IN" : "OUT";
+      const shooter = (i === currentIdx && activeSet.has(i)) ? `<span class="pill">SHOOTER</span>` : "";
+      const extras = (p.extras && p.extras.length) ? ` <span class="pill">EXTRA x${p.extras.length}</span>` : "";
+      return `${escapeHtml(p.name)} — ${escapeHtml(p.card || "—")} — ${p.lives} lives${extras} <span class="pill">${status}</span> ${shooter}`;
+    }).join("<br>");
+
+    refList.innerHTML = header + lines;
+  }
+
+  function escapeHtml(str){
+    return String(str)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  addPlayer();
+  addPlayer();
+</script>
+</body>
+</html>
